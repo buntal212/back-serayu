@@ -160,7 +160,8 @@ class SimpantokenControoler extends Controller
         if($respnotif){
             return response()->json([
                 'status' => true,
-                'message' => 'Notifikasi berhasil dikirim'
+                'message' => 'Notifikasi berhasil dikirim',
+                'token' => $tokens
             ]);
         }else{
             return response()->json([
