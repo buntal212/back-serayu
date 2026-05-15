@@ -9,4 +9,5 @@ Route::group([
 ], function () {
     Route::get('/get-lap-pembayaran-iuran', [LaporanYangSudahBayarController::class, 'index']);
     Route::get('/get-lap-kas', [LaporanYangSudahBayarController::class, 'indexkas']);
+    Route::get('/get-history-pembayaran', [LaporanYangSudahBayarController::class, 'gethistorypembayaran']);
 });

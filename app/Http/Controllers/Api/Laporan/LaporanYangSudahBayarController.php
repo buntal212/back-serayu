@@ -8,6 +8,7 @@ use App\Models\Transaksi\BelanjaH;
 use App\Models\Transaksi\Pembayaraniuran;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanYangSudahBayarController extends Controller
 {
@@ -59,6 +60,20 @@ class LaporanYangSudahBayarController extends Controller
             'saldoawal' => $saldoawal,
             'masuk' => $masuk,
             'keluar' => $keluar,
+        ]);
+    }
+
+    public function gethistorypembayaran()
+    {
+        $user = Auth::user();
+        $tahun = request('tahun');
+        $data = Pembayaraniuran::select('iuran.*','users.name as nama')
+            ->join('users', 'users.id', '=', 'iuran.warga_id')
+            ->where('warga_id', $user->id)
+            ->where('iuran.tahun', $tahun)
+            ->get();
+        return new JsonResponse([
+            'data' => $data,
         ]);
     }
 }

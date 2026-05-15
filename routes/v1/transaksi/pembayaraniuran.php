@@ -9,4 +9,5 @@ Route::group([
 ], function () {
     Route::get('/get-pembayaran-iuran', [PembayaranIuranController::class, 'index']);
     Route::post('/simpan', [PembayaranIuranController::class, 'store']);
+
 });
