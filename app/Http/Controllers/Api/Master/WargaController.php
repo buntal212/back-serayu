@@ -29,6 +29,7 @@ class WargaController extends Controller
                     $q->where('name', 'like', '%' . request('q') . '%')
                     ->orWhere('nokk', 'like', '%' . request('q') . '%');
                 })
+                ->orderBy('nokk')
                 ->get();
         return new JsonResource($data);
     }
