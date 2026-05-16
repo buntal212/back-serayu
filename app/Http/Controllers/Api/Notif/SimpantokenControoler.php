@@ -21,16 +21,31 @@ class SimpantokenControoler extends Controller
 
         $user = auth()->user();
 
-        $user->fcmTokens()->updateOrCreate(
+        $data = $user->fcmTokens()->updateOrCreate(
             ['token' => $request->token],
             [
-                'platform' => $request->platform ?? 'web',
+                'platform' => $request->platform,
                 'device_name' => $request->device_name,
+                'timezone' => $request->timezone,
+                'online' => $request->online,
+                'language' => $request->language,
+                'isPWAInstalled' => $request->isPWAInstalled,
+                'isAndroid' => $request->isAndroid,
+                'isiPhone' => $request->isiPhone,
+                'isiPad' => $request->isiPad,
+                'isIOS' => $request->isIOS,
+                'isMobile' => $request->isMobile,
+                'os' => $request->os,
+                'modelMatch' => is_array($request->modelMatch)
+                    ? json_encode($request->modelMatch)
+                    : $request->modelMatch,
+
                 'last_used_at' => now()
             ]
         );
 
         return response()->json([
+            'data' => $data,
             'status' => true,
             'message' => 'FCM token saved'
         ]);

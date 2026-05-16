@@ -13,6 +13,20 @@ class FcmToken extends Model
         'token',
         'platform',
         'device_name',
+        'timezone',
+        'online',
+        'language',
+
+        'isPWAInstalled',
+
+        'isAndroid',
+        'isiPhone',
+        'isiPad',
+        'isIOS',
+        'isMobile',
+
+        'os',
+        'modelMatch',
         'last_used_at'
     ];
     protected $table = 'fcm_tokens';
