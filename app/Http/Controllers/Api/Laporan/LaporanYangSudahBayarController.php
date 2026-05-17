@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Saldo;
 use App\Models\Transaksi\BelanjaH;
 use App\Models\Transaksi\Pembayaraniuran;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,12 +17,27 @@ class LaporanYangSudahBayarController extends Controller
     {
         $bulan = request('bulan');
         $tahun = request('tahun');
-        $data = Pembayaraniuran::select('iuran.*','users.name as nama')
-            ->join('users', 'users.id', '=', 'iuran.warga_id')
-            ->where('iuran.bulan', $bulan)
-            ->where('iuran.tahun', $tahun)
-            ->get();
-        return new JsonResponse([
+        // $data = Pembayaraniuran::select('iuran.*','users.name as nama')
+        //     ->join('users', 'users.id', '=', 'iuran.warga_id')
+        //     ->where('iuran.bulan', $bulan)
+        //     ->where('iuran.tahun', $tahun)
+        //     ->get();
+        $data = User::select(
+                    'users.id as idusers',
+                    'users.name as nama',
+                    'users.nokk as nokk',
+                    'iuran.*'
+                )
+                ->leftJoin('iuran', function ($join) use ($bulan, $tahun) {
+                    $join->on('users.id', '=', 'iuran.warga_id')
+                        ->where('iuran.bulan', $bulan)
+                        ->where('iuran.tahun', $tahun);
+                })
+                ->where('users.id','<>', 26)
+                ->orderBy('users.nokk')
+                ->get();
+
+        return response()->json([
             'data' => $data,
         ]);
     }
