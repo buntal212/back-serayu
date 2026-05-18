@@ -16,16 +16,19 @@ class PembayaranIuranController extends Controller
 {
     public function index()
     {
-        $data = Pembayaraniuran::select('iuran.*','users.name as nama')
+        $data = Pembayaraniuran::select('iuran.*', 'users.name as nama')
             ->join('users', 'users.id', '=', 'iuran.warga_id')
-            ->whereMonth('iuran.created_at', request('bulan'))
-            ->whereYear('iuran.created_at', request('tahun'))
-            ->when(request('q'), function ($q) {
-                $q->where('iuran.notrans', 'like', '%' . request('q') . '%')
+            ->where('iuran.bulan', request('bulan'))
+            ->where('iuran.tahun', request('tahun'))
+            ->when(request('q'), function ($query) {
+                $query->where(function ($q) {
+                    $q->where('iuran.notrans', 'like', '%' . request('q') . '%')
                     ->orWhere('users.name', 'like', '%' . request('q') . '%');
+                });
             })
             ->get();
-        return new JsonResponse($data);
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
