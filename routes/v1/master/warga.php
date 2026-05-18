@@ -12,4 +12,5 @@ Route::group([
     Route::post('/hapus', [WargaController::class, 'hapus']);
     Route::post('/simpanrinci', [WargaController::class, 'storerinci']);
     Route::post('/hapusrinci', [WargaController::class, 'hapusrinci']);
+    Route::post('/profileupdate', [WargaController::class, 'profileupdate']);
 });

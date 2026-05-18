@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use phpseclib3\Net\SFTP;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Validator;
 
 class WargaController extends Controller
 {
@@ -391,6 +392,59 @@ class WargaController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function profileupdate(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id' => 'required',
+                'name' => 'required|string|max:255',
+                'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            ],
+            [
+                'name.required' => 'Nama wajib diisi',
+
+                'foto.image' => 'File harus berupa gambar',
+                'foto.mimes' => 'Format foto harus jpg, jpeg, png, atau webp',
+                'foto.max' => 'Ukuran foto maksimal 2MB',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $user = User::find($request->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
+        }
+
+        $user->name = $request->name;
+
+        if ($request->hasFile('foto')) {
+
+            $filePath = $request->file('foto')->store('profile', 'public');
+
+            $user->foto  = asset('storage/' . $filePath);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile berhasil diupdate',
+            'data' => $user
+        ]);
     }
 
 }
