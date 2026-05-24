@@ -10,4 +10,5 @@ Route::group([
 ], function () {
    Route::get('/cuaca', [ApiCuacaController::class, 'getCuaca']);
    Route::get('/jadwalshalat', [JadwalShalatController::class, 'today']);
+   Route::get('/saldo_real', [JadwalShalatController::class, 'saldo_real']);
 });

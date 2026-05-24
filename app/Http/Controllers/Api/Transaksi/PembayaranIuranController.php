@@ -31,6 +31,7 @@ class PembayaranIuranController extends Controller
         return response()->json($data);
     }
 
+
     public function store(Request $request)
     {
         $validate = $request->validate([
@@ -151,6 +152,5 @@ class PembayaranIuranController extends Controller
             ->get();
         return $data;
     }
-
 
 }
