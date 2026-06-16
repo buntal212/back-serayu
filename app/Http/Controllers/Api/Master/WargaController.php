@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Master;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\Helper;
 use App\Models\Hakakses;
 use App\Models\Menus;
 use App\Models\User;
@@ -32,7 +33,16 @@ class WargaController extends Controller
                 })
                 ->orderBy('nokk')
                 ->get();
-        return new JsonResource($data);
+
+        // Transform data to format URLs
+        $transformedData = $data->map(function ($user) {
+            if ($user->foto) {
+                $user->foto = Helper::storageUrl($user->foto);
+            }
+            return $user;
+        });
+
+        return new JsonResource($transformedData);
     }
 
     public function store(Request $request)
@@ -307,6 +317,12 @@ class WargaController extends Controller
                 ->with('rincian')
                 ->where('id', $id)
                 ->first();
+
+        // Format URL gambar
+        if ($data && $data->foto) {
+            $data->foto = Helper::storageUrl($data->foto);
+        }
+
         return $data;
     }
 
@@ -435,15 +451,21 @@ class WargaController extends Controller
 
             $filePath = $request->file('foto')->store('profile', 'public');
 
-            $user->foto  = asset('storage/' . $filePath);
+            $user->foto  = $filePath;
         }
 
         $user->save();
 
+        // Format URL gambar menggunakan helper
+        $userData = $user->toArray();
+        if ($user->foto) {
+            $userData['foto_url'] = Helper::storageUrl($user->foto);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Profile berhasil diupdate',
-            'data' => $user
+            'data' => $userData
         ]);
     }
 
