@@ -72,4 +72,21 @@ class AuthController extends Controller
             'rincian' => $rincian,
         ]);
     }
+
+    public function logout()
+    {
+        try {
+            JWTAuth::parseToken()->invalidate();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Logout berhasil',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Token tidak valid',
+            ], 401);
+        }
+    }
 }
